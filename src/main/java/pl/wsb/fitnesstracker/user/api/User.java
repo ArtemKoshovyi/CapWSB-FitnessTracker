@@ -9,6 +9,7 @@ import lombok.ToString;
 import java.time.Instant;
 import java.time.LocalDate;
 
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -48,7 +49,6 @@ public class User {
         this.createdAt = Instant.now();
     }
 
-    // На випадок якщо Lombok не підхопиться
     public Long getId() { return id; }
     public String getEmail() { return email; }
 }

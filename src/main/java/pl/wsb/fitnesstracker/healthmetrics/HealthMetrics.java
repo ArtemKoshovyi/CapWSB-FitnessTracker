@@ -14,7 +14,6 @@ public class HealthMetrics {
     @Column(name = "id")
     private Long id;
 
-    // Багато метрик -> один користувач
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

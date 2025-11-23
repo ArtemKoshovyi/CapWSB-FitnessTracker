@@ -1,8 +1,7 @@
 package pl.wsb.fitnesstracker.loader;
 
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -27,14 +26,18 @@ import static java.util.Objects.isNull;
  */
 @Component
 @Profile("loadInitialData")
-@Slf4j
-@ToString
-@RequiredArgsConstructor
 class InitialDataLoader {
 
-    private final JpaRepository<User, Long> userRepository;
+    private static final Logger log = LoggerFactory.getLogger(InitialDataLoader.class);
 
+    private final JpaRepository<User, Long> userRepository;
     private final JpaRepository<Training, Long> trainingRepository;
+
+    public InitialDataLoader(JpaRepository<User, Long> userRepository,
+                             JpaRepository<Training, Long> trainingRepository) {
+        this.userRepository = userRepository;
+        this.trainingRepository = trainingRepository;
+    }
 
     @EventListener
     @Transactional
@@ -47,15 +50,16 @@ class InitialDataLoader {
         List<User> sampleUserList = generateSampleUsers();
         List<Training> sampleTrainingList = generateTrainingData(sampleUserList);
 
-
         log.info("Finished loading initial data");
     }
 
     private User generateUser(String name, String lastName, int age) {
-        User user = new User(name,
+        User user = new User(
+                name,
                 lastName,
                 now().minusYears(age),
-                "%s.%s@domain.com".formatted(name, lastName));
+                "%s.%s@domain.com".formatted(name, lastName)
+        );
         return userRepository.save(user);
     }
 
@@ -167,5 +171,4 @@ class InitialDataLoader {
             throw new IllegalStateException("Initial data loader was not autowired correctly " + this);
         }
     }
-
 }
