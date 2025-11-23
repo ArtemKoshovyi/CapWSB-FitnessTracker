@@ -34,9 +34,6 @@ public class User {
     @Column(name = "last_name", nullable = true, length = 100)
     private String lastName;
 
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt = Instant.now();
-
     public User(
             final String firstName,
             final String lastName,
@@ -46,7 +43,7 @@ public class User {
         this.lastName = lastName;
         this.birthdate = birthdate;
         this.email = email;
-        this.createdAt = Instant.now();
+
     }
 
     public Long getId() { return id; }
