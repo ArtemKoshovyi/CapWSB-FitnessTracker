@@ -76,6 +76,14 @@ class InitialDataLoader {
         users.add(generateUser("Noah", "Miller", 39));
         users.add(generateUser("Grace", "Anderson", 33));
         users.add(generateUser("Oliver", "Swift", 29));
+        // Św. Mikołaj – wiek "do zweryfikowania" :)
+        users.add(generateUser("Mikołaj", "Święty", 100));
+
+
+        log.info("Users saved in DB: {}", userRepository.count());
+        userRepository.findAll()
+                .forEach(u -> log.info("User in DB: {}", u));
+
 
         return users;
     }
@@ -171,4 +179,7 @@ class InitialDataLoader {
             throw new IllegalStateException("Initial data loader was not autowired correctly " + this);
         }
     }
+
+
 }
+

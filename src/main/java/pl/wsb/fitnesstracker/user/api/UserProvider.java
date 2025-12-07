@@ -5,29 +5,25 @@ import java.util.Optional;
 
 public interface UserProvider {
 
-    /**
-     * Retrieves a user based on their ID.
-     * If the user with given ID is not found, then {@link Optional#empty()} will be returned.
-     *
-     * @param userId id of the user to be searched
-     * @return An {@link Optional} containing the located user, or {@link Optional#empty()} if not found
-     */
     Optional<User> getUser(Long userId);
 
-    /**
-     * Retrieves a user based on their email.
-     * If the user with given email is not found, then {@link Optional#empty()} will be returned.
-     *
-     * @param email The email of the user to be searched
-     * @return An {@link Optional} containing the located user, or {@link Optional#empty()} if not found
-     */
     Optional<User> getUserByEmail(String email);
 
-    /**
-     * Retrieves all users.
-     *
-     * @return An {@link Optional} containing the all users,
-     */
     List<User> findAllUsers();
 
+    /**
+     * Search users by e-mail fragment (case-insensitive).
+     *
+     * @param emailFragment fragment of e-mail
+     * @return list of matching users
+     */
+    List<User> findUsersByEmailFragment(String emailFragment);
+
+    /**
+     * Find users older than given age (in years).
+     *
+     * @param age age threshold
+     * @return list of users older than age
+     */
+    List<User> findUsersOlderThan(int age);
 }
