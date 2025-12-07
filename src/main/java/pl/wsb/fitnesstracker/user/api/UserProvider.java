@@ -1,5 +1,6 @@
 package pl.wsb.fitnesstracker.user.api;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,5 +26,5 @@ public interface UserProvider {
      * @param age age threshold
      * @return list of users older than age
      */
-    List<User> findUsersOlderThan(int age);
+    List<User> findUsersOlderThan(LocalDate beforeDate);
 }

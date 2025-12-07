@@ -1,11 +1,15 @@
 package pl.wsb.fitnesstracker.user.internal;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.wsb.fitnesstracker.user.api.User;
 import pl.wsb.fitnesstracker.user.api.UserDto;
 import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
 import pl.wsb.fitnesstracker.user.api.UserService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -25,74 +29,70 @@ class UserController {
     }
 
     @PostMapping
-    public UserDto addUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         var user = userMapper.toEntity(userDto);
         var created = userService.createUser(user);
-        return userMapper.toDto(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toDto(created));
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
-        return userMapper.toDtos(userProvider.findAllUsers());
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(
+                userMapper.toDtos(userProvider.findAllUsers())
+        );
+    }
+
+    // ✔ ТЕСТ: /v1/users/simple
+    @GetMapping("/simple")
+    public ResponseEntity<List<UserDto>> getSimpleUsers() {
+        return ResponseEntity.ok(
+                userMapper.toDtos(userProvider.findAllUsers())
+        );
     }
 
     @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return userProvider.getUser(id)
                 .map(userMapper::toDto)
+                .map(ResponseEntity::ok)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @GetMapping("/by-email")
-    public UserDto getUserByEmail(@RequestParam String email) {
+    // ✔ ТЕСТ: /v1/users/email?email=...
+    @GetMapping("/email")
+    public ResponseEntity<List<UserDto>> getUserByEmail(@RequestParam("email") String email) {
         return userProvider.getUserByEmail(email)
                 .map(userMapper::toDto)
-                .orElseThrow(() -> new UserNotFoundException(-1L)); // можно сделать отдельный конструктор
+                .map(List::of)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new UserNotFoundException(-1L));
     }
 
-    /** Обновление пользователя (любой атрибут) */
     @PutMapping("/{id}")
-    public UserDto updateUser(@PathVariable Long id, @RequestBody UserDto dto) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto dto) {
         var user = userMapper.toEntity(dto);
 
-        user = new pl.wsb.fitnesstracker.user.api.User(
-                dto.firstName(),
-                dto.lastName(),
-                dto.birthdate(),
-                dto.email()
-        );
-        user = new pl.wsb.fitnesstracker.user.api.User(
-                dto.firstName(),
-                dto.lastName(),
-                dto.birthdate(),
-                dto.email()
-        );
-        user = userService.updateUser(
-                new pl.wsb.fitnesstracker.user.api.User(
-                        dto.firstName(),
-                        dto.lastName(),
-                        dto.birthdate(),
-                        dto.email()
-                ) {
-                    { // анонимный блок не нужен, см. комментарий ниже
-                    }
-                }
-        );
-        return userMapper.toDto(user);
+        try {
+            var idField = User.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(user, id);
+        } catch (Exception ignored) {}
+
+        var updated = userService.updateUser(user);
+        return ResponseEntity.ok(userMapper.toDto(updated));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/search/by-email")
-    public List<UserDto> searchByEmailFragment(@RequestParam String fragment) {
-        return userMapper.toDtos(userProvider.findUsersByEmailFragment(fragment));
-    }
-
-    @GetMapping("/search/by-age")
-    public List<UserDto> searchByAge(@RequestParam("ageGreaterThan") int ageGreaterThan) {
-        return userMapper.toDtos(userProvider.findUsersOlderThan(ageGreaterThan));
+    // ✔ ТЕСТ: /v1/users/older/{time}
+    @GetMapping("/older/{time}")
+    public ResponseEntity<List<UserDto>> getOlderThan(@PathVariable("time") LocalDate time) {
+        return ResponseEntity.ok(
+                userMapper.toDtos(userProvider.findUsersOlderThan(time))
+        );
     }
 }

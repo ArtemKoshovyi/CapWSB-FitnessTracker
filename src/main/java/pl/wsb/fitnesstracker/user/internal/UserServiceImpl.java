@@ -8,6 +8,7 @@ import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
 import pl.wsb.fitnesstracker.user.api.UserService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,8 +77,13 @@ class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findByEmailFragmentIgnoreCase(emailFragment);
     }
 
+    /**
+     * ТЕСТЫ ожидают: "пользователи старше даты" = birthdate < beforeDate
+     */
     @Override
-    public List<User> findUsersOlderThan(int age) {
-        return userRepository.findOlderThan(age);
+    public List<User> findUsersOlderThan(LocalDate beforeDate) {
+        return userRepository.findAll().stream()
+                .filter(u -> u.getBirthdate().isBefore(beforeDate))
+                .toList();
     }
 }

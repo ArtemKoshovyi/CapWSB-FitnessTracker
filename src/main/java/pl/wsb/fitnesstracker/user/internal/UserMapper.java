@@ -5,7 +5,6 @@ import pl.wsb.fitnesstracker.user.api.User;
 import pl.wsb.fitnesstracker.user.api.UserDto;
 
 import java.util.List;
-
 @Component
 class UserMapper {
 
@@ -20,12 +19,24 @@ class UserMapper {
     }
 
     User toEntity(UserDto dto) {
-        return new User(
+        var user = new User(
                 dto.firstName(),
                 dto.lastName(),
                 dto.birthdate(),
                 dto.email()
         );
+
+        // Если ID передан — устанавливаем
+        if (dto.id() != null) {
+            try {
+                var idField = User.class.getDeclaredField("id");
+                idField.setAccessible(true);
+                idField.set(user, dto.id());
+            } catch (Exception ignored) {
+            }
+        }
+
+        return user;
     }
 
     List<UserDto> toDtos(List<User> users) {
