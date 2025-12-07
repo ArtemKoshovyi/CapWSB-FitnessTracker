@@ -50,9 +50,11 @@ class UserController {
                 .orElseThrow(() -> new UserNotFoundException(-1L)); // можно сделать отдельный конструктор
     }
 
+    /** Обновление пользователя (любой атрибут) */
     @PutMapping("/{id}")
     public UserDto updateUser(@PathVariable Long id, @RequestBody UserDto dto) {
         var user = userMapper.toEntity(dto);
+
         user = new pl.wsb.fitnesstracker.user.api.User(
                 dto.firstName(),
                 dto.lastName(),
@@ -72,7 +74,7 @@ class UserController {
                         dto.birthdate(),
                         dto.email()
                 ) {
-                    {
+                    { // анонимный блок не нужен, см. комментарий ниже
                     }
                 }
         );
