@@ -11,10 +11,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+<<<<<<< HEAD
     private String firstName;
 
     private String lastName;
 
+=======
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
+
+    @Column(name = "birthdate", nullable = false)
+>>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
     private LocalDate birthdate;
 
     @Column(nullable = false, unique = true)

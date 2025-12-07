@@ -15,11 +15,14 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+<<<<<<< HEAD
 /**
  * This test class verifies the existence of specific tables and their columns
  * in the database schema using JPA and an in-memory database for testing.
  * Class should be under test/java/pl/wsb/fitnesstracker sources
  */
+=======
+>>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 class DatabaseSchemaTest {
@@ -28,9 +31,15 @@ class DatabaseSchemaTest {
     private DataSource dataSource;
 
     @Test
+<<<<<<< HEAD
     void shouldHaveUsersTable() throws Exception {
         try (Connection conn = dataSource.getConnection()) {
             assertThat(tableExists(conn, "users")).isTrue();
+=======
+    void shouldHaveEventTable() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            assertThat(tableExists(conn, "event")).isTrue();
+>>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
         }
     }
 
@@ -49,18 +58,61 @@ class DatabaseSchemaTest {
     }
 
     @Test
+<<<<<<< HEAD
     void usersTableHasExpectedColumns() throws Exception {
         try (Connection conn = dataSource.getConnection()) {
             Set<String> cols = tableColumns(conn, "users");
             assertThat(cols).contains("id", "email");
+=======
+    void shouldHaveTrainingsTable() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            assertThat(tableExists(conn, "trainings")).isTrue();
+>>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
         }
     }
+
+    @Test
+<<<<<<< HEAD
+    void healthMetricsTableHasExpectedColumns() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            Set<String> cols = tableColumns(conn, "health_metrics");
+            assertThat(cols).contains("id", "user_id");
+=======
+    void shouldHaveUserEventTable() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            assertThat(tableExists(conn, "user_event")).isTrue();
+        }
+    }
+
+    @Test
+    void shouldHaveUsersTable() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            assertThat(tableExists(conn, "users")).isTrue();
+        }
+    }
+
+    @Test
+    void shouldHaveWorkoutSessionTable() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            assertThat(tableExists(conn, "workout_session")).isTrue();
+        }
+    }
+
+    @Test
+    void eventTableHasExpectedColumns() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            Set<String> cols = tableColumns(conn, "event");
+            assertThat(cols).contains("id", "start_time", "end_time", "city", "country", "description", "name");
+        }
+    }
+
 
     @Test
     void healthMetricsTableHasExpectedColumns() throws Exception {
         try (Connection conn = dataSource.getConnection()) {
             Set<String> cols = tableColumns(conn, "health_metrics");
-            assertThat(cols).contains("id", "user_id");
+            assertThat(cols).contains("id", "user_id", "date", "weight", "height", "heart_rate");
+>>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
         }
     }
 
@@ -68,7 +120,43 @@ class DatabaseSchemaTest {
     void statisticsTableHasExpectedColumns() throws Exception {
         try (Connection conn = dataSource.getConnection()) {
             Set<String> cols = tableColumns(conn, "statistics");
+<<<<<<< HEAD
             assertThat(cols).contains("id", "user_id");
+=======
+            assertThat(cols).contains("id", "user_id", "total_distance", "total_calories_burned", "total_trainings");
+        }
+    }
+
+    @Test
+    void trainingsTableHasExpectedColumns() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            Set<String> cols = tableColumns(conn, "trainings");
+            assertThat(cols).contains("id", "user_id", "activity_type", "start_time", "end_time", "average_speed", "distance");
+        }
+    }
+
+    @Test
+    void userEventTableHasExpectedColumns() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            Set<String> cols = tableColumns(conn, "user_event");
+            assertThat(cols).contains("id", "user_id", "event_id", "status");
+        }
+    }
+
+    @Test
+    void usersTableHasExpectedColumns() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            Set<String> cols = tableColumns(conn, "users");
+            assertThat(cols).contains("id", "email", "first_name", "last_name");
+        }
+    }
+
+    @Test
+    void workoutSessionTableHasExpectedColumns() throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            Set<String> cols = tableColumns(conn, "workout_session");
+            assertThat(cols).contains("id", "training_id", "altitude", "end_latitude", "end_longitude", "start_latitude", "start_longitude", "timestamp");
+>>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
         }
     }
 
