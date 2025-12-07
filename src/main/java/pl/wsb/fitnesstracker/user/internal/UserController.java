@@ -1,13 +1,6 @@
 package pl.wsb.fitnesstracker.user.internal;
 
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.*;
-=======
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
->>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
 import pl.wsb.fitnesstracker.user.api.UserDto;
 import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
 import pl.wsb.fitnesstracker.user.api.UserProvider;
@@ -15,15 +8,6 @@ import pl.wsb.fitnesstracker.user.api.UserService;
 
 import java.util.List;
 
-<<<<<<< HEAD
-=======
-import java.util.List;
-
-/**
- * UserController is responsible for handling HTTP requests related to user operations.
- * It provides endpoints for retrieving and creating users.
- */
->>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
 @RestController
 @RequestMapping("/v1/users")
 class UserController {
@@ -32,25 +16,14 @@ class UserController {
     private final UserProvider userProvider;
     private final UserMapper userMapper;
 
-<<<<<<< HEAD
     UserController(UserService userService,
                    UserProvider userProvider,
                    UserMapper userMapper) {
         this.userService = userService;
         this.userProvider = userProvider;
         this.userMapper = userMapper;
-=======
-    @GetMapping
-    public List<UserDto> getAllUsers() {
-        return userService.findAllUsers()
-                .stream()
-                .map(userMapper::toDto)
-                .toList();
->>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
     }
-}
 
-<<<<<<< HEAD
     @PostMapping
     public UserDto addUser(@RequestBody UserDto userDto) {
         var user = userMapper.toEntity(userDto);
@@ -121,5 +94,3 @@ class UserController {
         return userMapper.toDtos(userProvider.findUsersOlderThan(ageGreaterThan));
     }
 }
-=======
->>>>>>> 0d8093fc29c6e4dd5ecac0c230bdeb91515947e0
