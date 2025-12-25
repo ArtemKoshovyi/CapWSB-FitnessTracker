@@ -3,14 +3,14 @@ package pl.wsb.fitnesstracker.user.internal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.wsb.fitnesstracker.user.api.User;
-import pl.wsb.fitnesstracker.user.api.UserDto;
-import pl.wsb.fitnesstracker.user.api.UserNotFoundException;
-import pl.wsb.fitnesstracker.user.api.UserProvider;
-import pl.wsb.fitnesstracker.user.api.UserService;
+import pl.wsb.fitnesstracker.user.api.*;
 
 import java.time.LocalDate;
 import java.util.List;
+
+/**
+ * REST controller for user management.
+ */
 
 @RestController
 @RequestMapping("/v1/users")
@@ -28,6 +28,9 @@ class UserController {
         this.userMapper = userMapper;
     }
 
+    /**
+     * Creates a new user.
+     */
     @PostMapping
     public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) {
         var user = userMapper.toEntity(userDto);
@@ -35,6 +38,9 @@ class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toDto(created));
     }
 
+    /**
+     * Returns all users.
+     */
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(
@@ -42,14 +48,19 @@ class UserController {
         );
     }
 
-    // ✔ ТЕСТ: /v1/users/simple
+    /**
+     * Returns user by id.
+     */
     @GetMapping("/simple")
-    public ResponseEntity<List<UserDto>> getSimpleUsers() {
+    public ResponseEntity<List<UserBasicDto>> getSimpleUsers() {
         return ResponseEntity.ok(
-                userMapper.toDtos(userProvider.findAllUsers())
+                userMapper.toBasicDtos(userProvider.findAllUsers())
         );
     }
 
+    /**
+     * Searches users by email fragment.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         return userProvider.getUser(id)
@@ -60,16 +71,26 @@ class UserController {
 
     // ✔ ТЕСТ: /v1/users/email?email=...
     @GetMapping("/email")
-    public ResponseEntity<List<UserDto>> getUserByEmail(@RequestParam("email") String email) {
-        return userProvider.getUserByEmail(email)
-                .map(userMapper::toDto)
-                .map(List::of)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new UserNotFoundException(-1L));
+    public ResponseEntity<List<UserEmailDto>> searchByEmail(
+            @RequestParam("email") String fragment
+    ) {
+        return ResponseEntity.ok(
+                userMapper.toEmailDtos(
+                        userProvider.findUsersByEmailFragment(fragment)
+                )
+        );
     }
 
+
+
+    /**
+     * Updates user data.
+     */
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto dto) {
+    public ResponseEntity<UserDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserDto dto)
+    {
         var user = userMapper.toEntity(dto);
 
         try {
@@ -81,14 +102,18 @@ class UserController {
         var updated = userService.updateUser(user);
         return ResponseEntity.ok(userMapper.toDto(updated));
     }
-
+    /**
+     * Deletes user by id.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    // ✔ ТЕСТ: /v1/users/older/{time}
+    /**
+     * Returns users older than given date.
+     */
     @GetMapping("/older/{time}")
     public ResponseEntity<List<UserDto>> getOlderThan(@PathVariable("time") LocalDate time) {
         return ResponseEntity.ok(

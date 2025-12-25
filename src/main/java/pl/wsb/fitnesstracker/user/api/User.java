@@ -1,20 +1,33 @@
 package pl.wsb.fitnesstracker.user.api;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import pl.wsb.fitnesstracker.training.api.Training;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * Entity representing application user.
+ * Stores personal data and related trainings.
+ */
 @Entity
 @Table(name = "users")
 public class User {
 
+    /**
+     * Unique identifier of the user.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** User first name. */
     private String firstName;
 
+    /** User last name. */
     private String lastName;
 
+    /** User birthdate. */
     private LocalDate birthdate;
 
     @Column(nullable = false, unique = true)
@@ -62,4 +75,15 @@ public class User {
         this.birthdate = birthdate;
         this.email = email;
     }
+
+    /**
+     * List of trainings assigned to the user.
+     */
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<Training> trainings = new ArrayList<>();
+
 }

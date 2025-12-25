@@ -53,9 +53,13 @@ class UserServiceImpl implements UserService, UserProvider {
 
     @Override
     public void deleteUser(Long userId) {
-        log.info("Deleting user with id={}", userId);
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+
         userRepository.deleteById(userId);
     }
+
 
     @Override
     public Optional<User> getUser(final Long userId) {
@@ -77,9 +81,7 @@ class UserServiceImpl implements UserService, UserProvider {
         return userRepository.findByEmailFragmentIgnoreCase(emailFragment);
     }
 
-    /**
-     * ТЕСТЫ ожидают: "пользователи старше даты" = birthdate < beforeDate
-     */
+
     @Override
     public List<User> findUsersOlderThan(LocalDate beforeDate) {
         return userRepository.findAll().stream()

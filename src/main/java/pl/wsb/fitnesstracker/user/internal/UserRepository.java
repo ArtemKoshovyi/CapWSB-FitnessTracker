@@ -10,14 +10,21 @@ import java.util.Optional;
 
 import static java.time.LocalDate.now;
 
+/**
+ * Repository for User entities.
+ */
 interface UserRepository extends JpaRepository<User, Long> {
-
+    /**
+     * Finds user by email.
+     */
     default Optional<User> findByEmail(String email) {
         return findAll().stream()
                 .filter(user -> Objects.equals(user.getEmail(), email))
                 .findFirst();
     }
-
+    /**
+     * Finds users by email fragment (case-insensitive).
+     */
     default List<User> findByEmailFragmentIgnoreCase(String fragment) {
         final String lower = fragment.toLowerCase();
         return findAll().stream()
@@ -25,7 +32,9 @@ interface UserRepository extends JpaRepository<User, Long> {
                         u.getEmail().toLowerCase().contains(lower))
                 .toList();
     }
-
+    /**
+     * Finds users older than given age.
+     */
     default List<User> findOlderThan(int age) {
         LocalDate borderDate = now().minusYears(age);
         return findAll().stream()
@@ -33,4 +42,6 @@ interface UserRepository extends JpaRepository<User, Long> {
                         u.getBirthdate().isBefore(borderDate))
                 .toList();
     }
+
+
 }

@@ -9,11 +9,12 @@ import pl.wsb.fitnesstracker.training.internal.ActivityType;
 import pl.wsb.fitnesstracker.user.api.User;
 
 import java.util.Date;
-
+/**
+ * Entity representing a training session.
+ */
 @Entity
 @Table(name = "trainings")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class Training {
 
@@ -43,6 +44,10 @@ public class Training {
     @Column(name = "average_speed")
     private double averageSpeed;
 
+    protected Training() {
+        // for JPA
+    }
+
     public Training(
             final User user,
             final Date startTime,
@@ -57,4 +62,32 @@ public class Training {
         this.distance = distance;
         this.averageSpeed = averageSpeed;
     }
+
+    public User getUser() {
+        return user;
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public ActivityType getActivityType() {
+        return activityType;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public double getAverageSpeed() {
+        return averageSpeed;
+    }
+
 }
