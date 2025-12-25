@@ -35,7 +35,7 @@ class TrainingController {
     /**
      * Returns trainings for given user.
      */
-    @GetMapping("/user/{userId}")
+    @GetMapping("/{userId}")
     List<TrainingDto> getTrainingsByUserId(@PathVariable Long userId) {
         return trainingMapper.toDtos(
                 trainingProvider.findTrainingsByUserId(userId)
